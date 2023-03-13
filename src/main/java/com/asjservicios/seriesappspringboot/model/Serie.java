@@ -32,7 +32,7 @@ public class Serie {
     )
     private List<Genero> generos = new ArrayList<Genero>();
 
-    @OneToMany (mappedBy = "serie", fetch = FetchType.LAZY) // serie es el atributo (de tipo Serie) en la clase UsuarioSerie
+    @OneToMany (mappedBy = "serie", cascade = CascadeType.ALL) // serie es el atributo (de tipo Serie) en la clase UsuarioSerie
 //    @JsonIgnoreProperties("serie")
     private Collection<UsuarioSerie> usuarioSeries;
 

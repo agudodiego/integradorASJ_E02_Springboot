@@ -1,6 +1,6 @@
 # Proyecto Integrador ASJ - Backend - (2da. Etapa)
 
-![s-app|80](src/assets/sapp_logo.svg "s-app")
+![s-app|80](src/main/resources/static/sapp_logo.svg "s-app")
 
 **S-app** es una aplicacion para la gestión y seguimiento de series. En ocasiones y por motivos varios, decidimos ver series a través de paginas que ofrecen contenido de forma gratuita. Si bien algunas de estas paginas nos permiten suscribirnos, la persona podría preferir centralizar todo el conteniodo de su agrado en un solo lugar, es ahí donde entra **S-app** como una alternativa.   
 

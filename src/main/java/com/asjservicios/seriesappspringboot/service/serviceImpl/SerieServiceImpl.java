@@ -42,19 +42,9 @@ public class SerieServiceImpl implements SerieService {
             if (optSerie.isEmpty()) {
                 System.out.println("--------------->> creo la serie");
                 List<Genero> generos = (List<Genero>) this.generoRepository.findAll();
-                Serie serieNueva = new Serie();
+                Serie serieNueva = this.crearSerie(serieDTO);
 
-                serieNueva.setId_serie(serieDTO.getId_serie());
-                serieNueva.setTitulo(serieDTO.getTitulo());
-                serieNueva.setTemporadas(serieDTO.getTemporadas());
-                serieNueva.setEpisodios(serieDTO.getEpisodios());
-                serieNueva.setImg_small(serieDTO.getImg_small());
-                serieNueva.setImg_big(serieDTO.getImg_big());
-                serieNueva.setAnio_lanzamiento(serieDTO.getAnio_lanzamiento());
-                serieNueva.setSitio_oficial(serieDTO.getSitio_oficial());
-                serieNueva.setSitio_oficial(serieDTO.getSitio_oficial());
-                serieNueva.setDescripcion(serieDTO.getDescripcion());
-
+                // Seteo del genero
                 String[] generosDsdFront = serieDTO.getGenero();
                 for (String genero: generosDsdFront) { // array de generos (string) que viene dsd el front
                     Boolean esta = false;
@@ -75,13 +65,8 @@ public class SerieServiceImpl implements SerieService {
                     }
                 }
 
-                UsuarioSerie relacion = new UsuarioSerie();
-                relacion.setUsuario(optUsuario.get());
-                relacion.setSerie(serieNueva);
-                relacion.setTemp_actual(serieDTO.getTemp_actual());
-                relacion.setEpisod_actual(serieDTO.getEpisod_actual());
-                relacion.setActiva(true);
-                relacion.setPlataforma(serieDTO.getPlataforma());
+                //Creacion de la relacion entre el usuario y la serie
+                UsuarioSerie relacion = this.crearRelacion(optUsuario.get(), serieNueva, serieDTO );
                 this.usuarioSerieRepository.save(relacion);
 
                 return serieDTO;
@@ -95,19 +80,39 @@ public class SerieServiceImpl implements SerieService {
 
                 } else {
                     System.out.println("--------------->> creo la relacion con el usuario xq la serie ya esta en la BD");
-                    UsuarioSerie nuevaRelacion = new UsuarioSerie();
-                    nuevaRelacion.setUsuario(optUsuario.get());
-                    nuevaRelacion.setSerie(optSerie.get());
-                    nuevaRelacion.setTemp_actual(serieDTO.getTemp_actual());
-                    nuevaRelacion.setEpisod_actual(serieDTO.getEpisod_actual());
-                    nuevaRelacion.setActiva(true);
-                    nuevaRelacion.setPlataforma(serieDTO.getPlataforma());
+                    UsuarioSerie nuevaRelacion = this.crearRelacion(optUsuario.get(), optSerie.get(), serieDTO );
                     this.usuarioSerieRepository.save(nuevaRelacion);
                 }
-
                 return serieDTO;
             }
         }
         return null;
     }
+
+    private UsuarioSerie crearRelacion(Usuario usuario, Serie serie, SerieDTO serieDTO) {
+        UsuarioSerie relacion = new UsuarioSerie();
+        relacion.setUsuario(usuario);
+        relacion.setSerie(serie);
+        relacion.setTemp_actual(serieDTO.getTemp_actual());
+        relacion.setEpisod_actual(serieDTO.getEpisod_actual());
+        relacion.setActiva(true);
+        relacion.setPlataforma(serieDTO.getPlataforma());
+        return relacion;
+    }
+
+    private Serie crearSerie(SerieDTO serieDTO) {
+        Serie serieNueva = new Serie();
+        serieNueva.setId_serie(serieDTO.getId_serie());
+        serieNueva.setTitulo(serieDTO.getTitulo());
+        serieNueva.setTemporadas(serieDTO.getTemporadas());
+        serieNueva.setEpisodios(serieDTO.getEpisodios());
+        serieNueva.setImg_small(serieDTO.getImg_small());
+        serieNueva.setImg_big(serieDTO.getImg_big());
+        serieNueva.setAnio_lanzamiento(serieDTO.getAnio_lanzamiento());
+        serieNueva.setSitio_oficial(serieDTO.getSitio_oficial());
+        serieNueva.setSitio_oficial(serieDTO.getSitio_oficial());
+        serieNueva.setDescripcion(serieDTO.getDescripcion());
+        return serieNueva;
+    }
+
 }

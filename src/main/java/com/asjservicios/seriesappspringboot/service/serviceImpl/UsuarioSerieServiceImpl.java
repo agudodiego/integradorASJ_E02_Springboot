@@ -41,6 +41,6 @@ public class UsuarioSerieServiceImpl implements UsuarioSerieService {
             this.usuarioSerieRepository.save(optRelacion.get());
             return optRelacion;
         }
-        return Optional.empty();
+        return optRelacion;
     }
 }
