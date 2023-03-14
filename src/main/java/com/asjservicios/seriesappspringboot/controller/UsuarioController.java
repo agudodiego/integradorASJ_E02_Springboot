@@ -1,5 +1,7 @@
 package com.asjservicios.seriesappspringboot.controller;
 
+import com.asjservicios.seriesappspringboot.mapper.UsuarioMapper;
+import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioDTO;
 import com.asjservicios.seriesappspringboot.model.Usuario;
 import com.asjservicios.seriesappspringboot.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +27,9 @@ public class UsuarioController {
 
         Map<String, Object> response = new HashMap<>();
 
-        Optional<Usuario> optUsuario = this.usuarioService.validarUsuario(nombre, usuario);
-        if ( optUsuario.isPresent()) {
-            return ResponseEntity.ok(optUsuario.get());
+        UsuarioDTO UsuarioDTO = this.usuarioService.validarUsuario(nombre, usuario);
+        if ( UsuarioDTO != null) {
+            return ResponseEntity.ok(UsuarioDTO);
         }
 
         response.put("success", Boolean.FALSE);
@@ -38,10 +40,6 @@ public class UsuarioController {
 
     @PostMapping("")
     public ResponseEntity<?> addUsuario(@RequestBody Usuario usuario) {
-
-//        if (usuario.getUsuario().length() >= 5 && usuario.getContrasenia().length() >= 8 && usuario.getEmail().contains("@")) {
-//            return this.usuarioService.save(usuario);
-//        }
 
         Map<String, Object> response = new HashMap<>();
 

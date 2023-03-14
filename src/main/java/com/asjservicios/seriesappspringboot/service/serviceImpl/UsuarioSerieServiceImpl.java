@@ -1,7 +1,10 @@
 package com.asjservicios.seriesappspringboot.service.serviceImpl;
 
-import com.asjservicios.seriesappspringboot.model.SerieDTO;
+import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioSerieDTO;
+import com.asjservicios.seriesappspringboot.model.Serie;
+import com.asjservicios.seriesappspringboot.model.Usuario;
 import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
+import com.asjservicios.seriesappspringboot.repository.UsuarioRepository;
 import com.asjservicios.seriesappspringboot.repository.UsuarioSerieRepository;
 import com.asjservicios.seriesappspringboot.service.UsuarioSerieService;
 import org.springframework.stereotype.Service;
@@ -24,23 +27,20 @@ public class UsuarioSerieServiceImpl implements UsuarioSerieService {
     }
 
     @Override
-    public Optional<UsuarioSerie> updateRelacion(UsuarioSerie relacionFront) {
-        Integer id_usuario = relacionFront.getUsuario().getId_usuario();
-        Integer id_serie = relacionFront.getSerie().getId_serie();
+    public UsuarioSerieDTO updateRelacion(UsuarioSerieDTO relacionFrontDTO) {
+        Integer id_usuario = relacionFrontDTO.getId_usuario();
+        Integer id_serie = relacionFrontDTO.getId_serie();
 
-        System.out.println("--------------------> " + id_usuario);
-        System.out.println("--------------------> " + id_serie);
         Optional<UsuarioSerie> optRelacion = this.usuarioSerieRepository.buscarPorIdUsuarioEIdSerie(id_usuario, id_serie);
-        System.out.println("--------------------> " + optRelacion);
 
         if (optRelacion.isPresent()) {
-            optRelacion.get().setTemp_actual(relacionFront.getTemp_actual());
-            optRelacion.get().setEpisod_actual(relacionFront.getEpisod_actual());
-            optRelacion.get().setActiva(relacionFront.getActiva());
-            optRelacion.get().setPlataforma(relacionFront.getPlataforma());
+            optRelacion.get().setTemp_actual(relacionFrontDTO.getTemp_actual());
+            optRelacion.get().setEpisod_actual(relacionFrontDTO.getEpisod_actual());
+            optRelacion.get().setActiva(relacionFrontDTO.getActiva());
+            optRelacion.get().setPlataforma(relacionFrontDTO.getPlataforma());
             this.usuarioSerieRepository.save(optRelacion.get());
-            return optRelacion;
+            return relacionFrontDTO;
         }
-        return optRelacion;
+        return null;
     }
 }

@@ -1,4 +1,6 @@
-package com.asjservicios.seriesappspringboot.model;
+package com.asjservicios.seriesappspringboot.model.DTOs;
+
+import com.asjservicios.seriesappspringboot.model.Plataforma;
 
 public class SerieDTO {
     private Integer id_serie;
@@ -15,6 +17,7 @@ public class SerieDTO {
     private Boolean activa;
     private Integer temp_actual;
     private Integer episod_actual;
+    private Integer id_relacion;
 
     public SerieDTO() {
     }
@@ -129,5 +132,13 @@ public class SerieDTO {
 
     public void setEpisod_actual(Integer episod_actual) {
         this.episod_actual = episod_actual;
+    }
+
+    public Integer getId_relacion() {
+        return id_relacion;
+    }
+
+    public void setId_relacion(Integer id_relacion) {
+        this.id_relacion = id_relacion;
     }
 }

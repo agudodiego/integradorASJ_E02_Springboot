@@ -1,5 +1,7 @@
 package com.asjservicios.seriesappspringboot.controller;
 
+import com.asjservicios.seriesappspringboot.mapper.UsuarioSerieMapper;
+import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioSerieDTO;
 import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
 import com.asjservicios.seriesappspringboot.service.UsuarioSerieService;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +23,22 @@ public class UsuarioSerieController {
     }
 
     @GetMapping("/{id}")
-    public UsuarioSerie getRelacionUsuarioSerie(@PathVariable Integer id) {
-        return this.usuarioSerieService.findById(id).get();
+    public UsuarioSerieDTO getRelacionUsuarioSerie(@PathVariable Integer id) {
+
+        UsuarioSerie optUsuarioSerie = this.usuarioSerieService.findById(id).get();
+        UsuarioSerieDTO UsuarioSerieDTO = UsuarioSerieMapper.entityToDto(optUsuarioSerie);
+        return UsuarioSerieDTO;
+
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> actualizarRelacion(@RequestBody UsuarioSerie relacion) {
+    @PutMapping("")
+    public ResponseEntity<?> actualizarRelacion(@RequestBody UsuarioSerieDTO relacionDTO) {
 
         Map<String, Object> response = new HashMap<>();
-        Optional<UsuarioSerie> optRelacion = this.usuarioSerieService.updateRelacion(relacion);
+        UsuarioSerieDTO relDTO = this.usuarioSerieService.updateRelacion(relacionDTO);
 
-        if(optRelacion.isPresent()) {
-            return ResponseEntity.ok(optRelacion.get());
+        if(relDTO != null) {
+            return ResponseEntity.ok(relDTO);
         }
 
         response.put("success", Boolean.FALSE);

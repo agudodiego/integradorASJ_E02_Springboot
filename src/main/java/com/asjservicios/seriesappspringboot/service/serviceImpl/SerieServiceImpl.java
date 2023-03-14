@@ -1,6 +1,8 @@
 package com.asjservicios.seriesappspringboot.service.serviceImpl;
 
+import com.asjservicios.seriesappspringboot.mapper.SerieMapper;
 import com.asjservicios.seriesappspringboot.model.*;
+import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
 import com.asjservicios.seriesappspringboot.repository.GeneroRepository;
 import com.asjservicios.seriesappspringboot.repository.SerieRepository;
 import com.asjservicios.seriesappspringboot.repository.UsuarioRepository;
@@ -8,6 +10,7 @@ import com.asjservicios.seriesappspringboot.repository.UsuarioSerieRepository;
 import com.asjservicios.seriesappspringboot.service.SerieService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,28 +45,8 @@ public class SerieServiceImpl implements SerieService {
             if (optSerie.isEmpty()) {
                 System.out.println("--------------->> creo la serie");
                 List<Genero> generos = (List<Genero>) this.generoRepository.findAll();
-                Serie serieNueva = this.crearSerie(serieDTO);
-
-                // Seteo del genero
-                String[] generosDsdFront = serieDTO.getGenero();
-                for (String genero: generosDsdFront) { // array de generos (string) que viene dsd el front
-                    Boolean esta = false;
-                    Genero generoEnBD = new Genero();
-                    for (Genero g: generos) { // array generos que vienen de la BD
-                        if (genero.equals(g.getGenero())) {
-                            esta = true;
-                            generoEnBD = g;
-                            break;
-                        }
-                    }
-                    if (esta) {
-                        serieNueva.getGeneros().add(generoEnBD);
-                    } else {
-                        Genero generoNuevo = new Genero();
-                        generoNuevo.setGenero(genero);
-                        serieNueva.getGeneros().add(generoNuevo);
-                    }
-                }
+                // Mapeo la nueva serie a traves de SerieMapper
+                Serie serieNueva = SerieMapper.dtoToEntity(serieDTO, generos);
 
                 //Creacion de la relacion entre el usuario y la serie
                 UsuarioSerie relacion = this.crearRelacion(optUsuario.get(), serieNueva, serieDTO );
@@ -75,6 +58,9 @@ public class SerieServiceImpl implements SerieService {
 
                 if (optRelacion.isPresent()) {
                     System.out.println("--------------->> actualizo la relacion xq el usuario ya la tiene en su repositorio");
+                    //optRelacion.get().setUsuario(optUsuario.get()); // chequear esto
+                    //optRelacion.get().setSerie(optSerie.get()); // chequear esto
+
                     optRelacion.get().setActiva(true);
                     this.usuarioSerieRepository.save(optRelacion.get());
 
@@ -100,19 +86,28 @@ public class SerieServiceImpl implements SerieService {
         return relacion;
     }
 
-    private Serie crearSerie(SerieDTO serieDTO) {
-        Serie serieNueva = new Serie();
-        serieNueva.setId_serie(serieDTO.getId_serie());
-        serieNueva.setTitulo(serieDTO.getTitulo());
-        serieNueva.setTemporadas(serieDTO.getTemporadas());
-        serieNueva.setEpisodios(serieDTO.getEpisodios());
-        serieNueva.setImg_small(serieDTO.getImg_small());
-        serieNueva.setImg_big(serieDTO.getImg_big());
-        serieNueva.setAnio_lanzamiento(serieDTO.getAnio_lanzamiento());
-        serieNueva.setSitio_oficial(serieDTO.getSitio_oficial());
-        serieNueva.setSitio_oficial(serieDTO.getSitio_oficial());
-        serieNueva.setDescripcion(serieDTO.getDescripcion());
-        return serieNueva;
-    }
+//    private List<Genero> crearListadoDeGeneros(SerieDTO serieDTO, List<Genero> generos) {
+//        String[] generosDsdFront = serieDTO.getGenero();
+//        List<Genero> listadoGenerosParaSerie = new ArrayList<>();
+//        for (String genero: generosDsdFront) { // array de generos (string) que viene dsd el front
+//            Boolean esta = false;
+//            Genero generoEnBD = new Genero();
+//            for (Genero g: generos) { // array generos que vienen de la BD
+//                if (genero.equals(g.getGenero())) {
+//                    esta = true;
+//                    generoEnBD = g;
+//                    break;
+//                }
+//            }
+//            if (esta) {
+//                listadoGenerosParaSerie.add(generoEnBD);
+//            } else {
+//                Genero generoNuevo = new Genero();
+//                generoNuevo.setGenero(genero);
+//                listadoGenerosParaSerie.add(generoNuevo);
+//            }
+//        }
+//        return listadoGenerosParaSerie;
+//    }
 
 }

@@ -1,7 +1,8 @@
 package com.asjservicios.seriesappspringboot.controller;
 
+import com.asjservicios.seriesappspringboot.mapper.SerieMapper;
 import com.asjservicios.seriesappspringboot.model.Serie;
-import com.asjservicios.seriesappspringboot.model.SerieDTO;
+import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
 import com.asjservicios.seriesappspringboot.service.SerieService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,8 @@ public class SerieController {
 
         Optional<Serie> optSerie = this.serieService.findById(id);
         if (optSerie.isPresent()) {
-            return ResponseEntity.ok(optSerie.get());
+            SerieDTO serieDTO = SerieMapper.entityToDtoSinRelacion(optSerie.get());
+            return ResponseEntity.ok(serieDTO);
         }
 
         response.put("success", Boolean.FALSE);

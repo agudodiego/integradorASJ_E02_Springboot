@@ -1,7 +1,7 @@
 package com.asjservicios.seriesappspringboot.service;
 
 import com.asjservicios.seriesappspringboot.model.Serie;
-import com.asjservicios.seriesappspringboot.model.SerieDTO;
+import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
 
 import java.util.Optional;
 
