@@ -37,8 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Optional<Usuario> buscarPorNombre(String nombre) {
-        // aca llamar al mapper y devolverlo
-        return this.usuarioRepository.buscarPorNombre(nombre);
+        return this.usuarioRepository.findByUsuario(nombre);
     }
 
     @Override
@@ -47,13 +46,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         List<SerieDTO> seriesDelUser = new ArrayList<>();
         if (optUsuario.isPresent() && usuario.getUsuario().equals(optUsuario.get().getUsuario()) && usuario.getContrasenia().equals(optUsuario.get().getContrasenia())) {
             // traigo las series del usuario y las mapeo
-            for (UsuarioSerie us : optUsuario.get().getUsuarioSeries()) {
-                if (us.getActiva()) {
-                    Optional<Serie> optSerieAux = serieService.findById(us.getSerie().getId_serie());
-                    SerieDTO serieAux = SerieMapper.entityToDto(optSerieAux.get(), us);
-                    seriesDelUser.add(serieAux);
-                }
-            }
+            optUsuario.get().getUsuarioSeries().stream()
+                    .filter(UsuarioSerie::getActiva) // us -> us.getActiva() == true
+                    .map( us -> {
+                        Optional<Serie> optSerieAux = serieService.findById(us.getSerie().getId_serie());
+                        return SerieMapper.entityToDto(optSerieAux.get(), us);
+                    }).forEach(seriesDelUser::add); // s -> seriesDelUser.add(s)
 
             UsuarioDTO usuarioDTO = UsuarioMapper.entityToDto(optUsuario.get(), seriesDelUser);
             return usuarioDTO;
@@ -64,7 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     // METODOS AUXILIARES **************************************************
     @Override
     public boolean usuarioExist(String nombre) {
-        return this.usuarioRepository.buscarPorNombre(nombre).isPresent();
+        return this.usuarioRepository.findByUsuario(nombre).isPresent();
     }
 
 }

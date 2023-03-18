@@ -4,6 +4,7 @@ import com.asjservicios.seriesappspringboot.mapper.UsuarioSerieMapper;
 import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioSerieDTO;
 import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
 import com.asjservicios.seriesappspringboot.service.UsuarioSerieService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class UsuarioSerieController {
     public UsuarioSerieDTO getRelacionUsuarioSerie(@PathVariable Integer id) {
 
         UsuarioSerie optUsuarioSerie = this.usuarioSerieService.findById(id).get();
+
         UsuarioSerieDTO UsuarioSerieDTO = UsuarioSerieMapper.entityToDto(optUsuarioSerie);
         return UsuarioSerieDTO;
 
@@ -43,6 +45,6 @@ public class UsuarioSerieController {
 
         response.put("success", Boolean.FALSE);
         response.put("message", "La relacion entre el usuario y la serie no existe");
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }

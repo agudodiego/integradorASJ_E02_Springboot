@@ -5,6 +5,7 @@ import com.asjservicios.seriesappspringboot.repository.PlataformaRepository;
 import com.asjservicios.seriesappspringboot.service.PlataformaService;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlataformaServiceImpl implements PlataformaService {
@@ -17,7 +18,6 @@ public class PlataformaServiceImpl implements PlataformaService {
 
     @Override
     public List<Plataforma> findAll() {
-        List<Plataforma> plataformas = (List<Plataforma>) this.plataformaRepository.findAll();
-        return plataformas;
+        return (List<Plataforma>) this.plataformaRepository.findAll();
     }
 }

@@ -4,6 +4,7 @@ import com.asjservicios.seriesappspringboot.mapper.SerieMapper;
 import com.asjservicios.seriesappspringboot.model.Serie;
 import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
 import com.asjservicios.seriesappspringboot.service.SerieService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,11 +35,20 @@ public class SerieController {
 
         response.put("success", Boolean.FALSE);
         response.put("message", String.format("No hay ninguna serie con id %d", id));
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @PostMapping("/{nombreUsuario}")
-    public SerieDTO guardarSerie(@PathVariable String nombreUsuario, @RequestBody SerieDTO serieDTO) {
-        return this.serieService.save(nombreUsuario, serieDTO);
+    public ResponseEntity<?> guardarSerie(@PathVariable String nombreUsuario, @RequestBody SerieDTO serieDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+        SerieDTO serieDTORta = this.serieService.save(nombreUsuario, serieDTO);
+        if (serieDTORta != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(serieDTORta);
+        }
+
+        response.put("success", Boolean.FALSE);
+        response.put("message", String.format("La serie %s no se pudo agregar", serieDTO.getTitulo()));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }

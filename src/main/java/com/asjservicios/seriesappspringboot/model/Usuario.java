@@ -22,7 +22,6 @@ public class Usuario {
     private String email;
 
     @OneToMany (mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // usuario es el atributo (de tipo Usuario) en la clase UsuarioSerie
-//    @JsonIgnoreProperties("usuario")
     private Collection<UsuarioSerie> usuarioSeries;
 
 

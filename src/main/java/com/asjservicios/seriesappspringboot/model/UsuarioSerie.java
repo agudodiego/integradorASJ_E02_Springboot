@@ -16,12 +16,10 @@ public class UsuarioSerie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_usuario_serie;
 
-//    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-//    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_serie")
     private Serie serie;

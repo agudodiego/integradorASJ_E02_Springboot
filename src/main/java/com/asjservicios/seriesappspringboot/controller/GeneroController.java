@@ -2,6 +2,7 @@ package com.asjservicios.seriesappspringboot.controller;
 
 import com.asjservicios.seriesappspringboot.model.Genero;
 import com.asjservicios.seriesappspringboot.repository.GeneroRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +21,8 @@ public class GeneroController {
     }
 
     @GetMapping("/generos")
-    public List<Genero> traerGeneros() {
+    public ResponseEntity<?> traerGeneros() {
         List<Genero> generos = (List<Genero>) this.generoRepository.findAll();
-        return generos;
+        return ResponseEntity.ok(generos);
     }
 }

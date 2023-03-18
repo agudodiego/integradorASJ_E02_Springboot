@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
 
     //SELECT * FROM usuarios WHERE usuario = ?
-    @Query("from Usuario u where u.usuario = ?1")
-    Optional<Usuario> buscarPorNombre(String nombre);
+    //@Query("from Usuario u where u.usuario = ?1")
+    //Optional<Usuario> buscarPorNombre(String nombre);
+
+    Optional<Usuario> findByUsuario(String nombre);
 }

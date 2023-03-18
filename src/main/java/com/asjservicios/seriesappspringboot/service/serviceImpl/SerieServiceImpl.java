@@ -37,7 +37,7 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public SerieDTO save(String nombreUsuario, SerieDTO serieDTO) {
-        Optional<Usuario> optUsuario = this.usuarioRepository.buscarPorNombre(nombreUsuario);
+        Optional<Usuario> optUsuario = this.usuarioRepository.findByUsuario(nombreUsuario);
         Optional<Serie> optSerie = this.findById(serieDTO.getId_serie());
 
         if (optUsuario.isPresent()) {
@@ -58,9 +58,10 @@ public class SerieServiceImpl implements SerieService {
 
                 if (optRelacion.isPresent()) {
                     System.out.println("--------------->> actualizo la relacion xq el usuario ya la tiene en su repositorio");
-                    //optRelacion.get().setUsuario(optUsuario.get()); // chequear esto
-                    //optRelacion.get().setSerie(optSerie.get()); // chequear esto
-
+                    // cargo los datos de la relacion en el objeto serie que devuelve la API
+                    serieDTO.setEpisod_actual(optRelacion.get().getEpisod_actual());
+                    serieDTO.setTemp_actual(optRelacion.get().getTemp_actual());
+                    serieDTO.setPlataforma(optRelacion.get().getPlataforma());
                     optRelacion.get().setActiva(true);
                     this.usuarioSerieRepository.save(optRelacion.get());
 
@@ -85,29 +86,4 @@ public class SerieServiceImpl implements SerieService {
         relacion.setPlataforma(serieDTO.getPlataforma());
         return relacion;
     }
-
-//    private List<Genero> crearListadoDeGeneros(SerieDTO serieDTO, List<Genero> generos) {
-//        String[] generosDsdFront = serieDTO.getGenero();
-//        List<Genero> listadoGenerosParaSerie = new ArrayList<>();
-//        for (String genero: generosDsdFront) { // array de generos (string) que viene dsd el front
-//            Boolean esta = false;
-//            Genero generoEnBD = new Genero();
-//            for (Genero g: generos) { // array generos que vienen de la BD
-//                if (genero.equals(g.getGenero())) {
-//                    esta = true;
-//                    generoEnBD = g;
-//                    break;
-//                }
-//            }
-//            if (esta) {
-//                listadoGenerosParaSerie.add(generoEnBD);
-//            } else {
-//                Genero generoNuevo = new Genero();
-//                generoNuevo.setGenero(genero);
-//                listadoGenerosParaSerie.add(generoNuevo);
-//            }
-//        }
-//        return listadoGenerosParaSerie;
-//    }
-
 }

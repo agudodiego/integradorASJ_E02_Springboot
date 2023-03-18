@@ -4,6 +4,7 @@ import com.asjservicios.seriesappspringboot.mapper.UsuarioMapper;
 import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioDTO;
 import com.asjservicios.seriesappspringboot.model.Usuario;
 import com.asjservicios.seriesappspringboot.service.UsuarioService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class UsuarioController {
 
         response.put("success", Boolean.FALSE);
         response.put("message", "Usuario y/o contraseña incorrecto/s");
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 
@@ -47,11 +48,12 @@ public class UsuarioController {
         if ( u == null) {
             response.put("success", Boolean.FALSE);
             response.put("message", String.format("El suario %s ya existe", usuario.getUsuario()));
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
         response.put("success", Boolean.TRUE);
+        response.put("message", String.format("El suario %s fue creado", u.getUsuario()));
         response.put("data", u);
-        return ResponseEntity.ok(u);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
