@@ -5,7 +5,6 @@ import com.asjservicios.seriesappspringboot.repository.PlataformaRepository;
 import com.asjservicios.seriesappspringboot.service.PlataformaService;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PlataformaServiceImpl implements PlataformaService {
