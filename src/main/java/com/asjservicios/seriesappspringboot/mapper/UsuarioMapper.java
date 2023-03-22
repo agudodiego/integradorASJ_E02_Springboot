@@ -17,4 +17,12 @@ public class UsuarioMapper {
         return dto;
     }
 
+    public static UsuarioDTO entityToDtoCambioContrasenia(Usuario entity) {
+        UsuarioDTO dto = new UsuarioDTO();
+
+        dto.setId_usuario(entity.getId_usuario());
+        dto.setUsuario(entity.getUsuario());
+        return dto;
+    }
+
 }

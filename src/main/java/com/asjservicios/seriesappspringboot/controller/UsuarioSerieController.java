@@ -1,5 +1,6 @@
 package com.asjservicios.seriesappspringboot.controller;
 
+import com.asjservicios.seriesappspringboot.exceptions.RelacionException;
 import com.asjservicios.seriesappspringboot.mapper.UsuarioSerieMapper;
 import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioSerieDTO;
 import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
@@ -24,27 +25,36 @@ public class UsuarioSerieController {
     }
 
     @GetMapping("/{id}")
-    public UsuarioSerieDTO getRelacionUsuarioSerie(@PathVariable Integer id) {
+    public ResponseEntity<?> getRelacionUsuarioSerie(@PathVariable Integer id) {
 
-        UsuarioSerie optUsuarioSerie = this.usuarioSerieService.findById(id).get();
+        Map<String, Object> response = new HashMap<>();
 
-        UsuarioSerieDTO UsuarioSerieDTO = UsuarioSerieMapper.entityToDto(optUsuarioSerie);
-        return UsuarioSerieDTO;
+        try {
+            UsuarioSerie optUsuarioSerie = this.usuarioSerieService.findById(id).get();
+            UsuarioSerieDTO UsuarioSerieDTO = UsuarioSerieMapper.entityToDto(optUsuarioSerie);
+            return ResponseEntity.ok(UsuarioSerieDTO);
 
+        }catch (Exception re) {
+            response.put("success", Boolean.FALSE);
+            response.put("message", "La relacion no existe");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
     @PutMapping("")
     public ResponseEntity<?> actualizarRelacion(@RequestBody UsuarioSerieDTO relacionDTO) {
 
         Map<String, Object> response = new HashMap<>();
-        UsuarioSerieDTO relDTO = this.usuarioSerieService.updateRelacion(relacionDTO);
 
-        if(relDTO != null) {
+        try {
+            UsuarioSerieDTO relDTO = this.usuarioSerieService.updateRelacion(relacionDTO);
             return ResponseEntity.ok(relDTO);
-        }
+            
+        }catch (RelacionException re) {
 
-        response.put("success", Boolean.FALSE);
-        response.put("message", "La relacion entre el usuario y la serie no existe");
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+            response.put("success", Boolean.FALSE);
+            response.put("message", "La relacion entre el usuario y la serie no existe");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
     }
 }

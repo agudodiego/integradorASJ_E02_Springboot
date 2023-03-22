@@ -1,5 +1,6 @@
 package com.asjservicios.seriesappspringboot.service.serviceImpl;
 
+import com.asjservicios.seriesappspringboot.exceptions.UsuarioException;
 import com.asjservicios.seriesappspringboot.mapper.SerieMapper;
 import com.asjservicios.seriesappspringboot.mapper.UsuarioMapper;
 import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
@@ -28,9 +29,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario save(Usuario usuario) {
+    public Usuario save(Usuario usuario) throws UsuarioException {
         if (this.usuarioExist(usuario.getUsuario())) {
-            return null;
+            throw new UsuarioException();
         }
         return this.usuarioRepository.save(usuario);
     }
@@ -41,7 +42,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioDTO validarUsuario(String nombre, Usuario usuario) {
+    public UsuarioDTO traerUsuarioDTOCompleto(String nombre, Usuario usuario) throws UsuarioException {
         Optional<Usuario> optUsuario = this.buscarPorNombre(nombre);
         List<SerieDTO> seriesDelUser = new ArrayList<>();
         if (optUsuario.isPresent() && usuario.getUsuario().equals(optUsuario.get().getUsuario()) && usuario.getContrasenia().equals(optUsuario.get().getContrasenia())) {
@@ -56,7 +57,20 @@ public class UsuarioServiceImpl implements UsuarioService {
             UsuarioDTO usuarioDTO = UsuarioMapper.entityToDto(optUsuario.get(), seriesDelUser);
             return usuarioDTO;
         }
-        return null;
+        throw new UsuarioException();
+    }
+
+    @Override
+    public Optional<Usuario> cambiarContrasenia(String nombre, UsuarioDTO usuarioDTO) throws UsuarioException {
+
+        Optional<Usuario> optUsuario = this.buscarPorNombre(nombre);
+
+        if (optUsuario.isPresent() && usuarioDTO.getUsuario().equals(optUsuario.get().getUsuario()) && usuarioDTO.getContrasenia().equals(optUsuario.get().getContrasenia())) {
+           optUsuario.get().setContrasenia(usuarioDTO.getNuevaContrasenia());
+           this.usuarioRepository.save(optUsuario.get());
+           return optUsuario;
+        }
+        throw  new UsuarioException();
     }
 
     // METODOS AUXILIARES **************************************************

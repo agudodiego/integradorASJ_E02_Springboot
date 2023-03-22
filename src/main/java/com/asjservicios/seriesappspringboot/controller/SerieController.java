@@ -1,5 +1,6 @@
 package com.asjservicios.seriesappspringboot.controller;
 
+import com.asjservicios.seriesappspringboot.exceptions.SerieException;
 import com.asjservicios.seriesappspringboot.mapper.SerieMapper;
 import com.asjservicios.seriesappspringboot.model.Serie;
 import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
@@ -27,28 +28,31 @@ public class SerieController {
     public ResponseEntity<?> getSerieById(@PathVariable Integer id) {
         Map<String, Object> response = new HashMap<>();
 
-        Optional<Serie> optSerie = this.serieService.findById(id);
-        if (optSerie.isPresent()) {
+        try {
+            Optional<Serie> optSerie = this.serieService.findById(id);
             SerieDTO serieDTO = SerieMapper.entityToDtoSinRelacion(optSerie.get());
             return ResponseEntity.ok(serieDTO);
-        }
 
-        response.put("success", Boolean.FALSE);
-        response.put("message", String.format("No hay ninguna serie con id %d", id));
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("success", Boolean.FALSE);
+            response.put("message", String.format("No hay ninguna serie con id %d", id));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
     @PostMapping("/{nombreUsuario}")
     public ResponseEntity<?> guardarSerie(@PathVariable String nombreUsuario, @RequestBody SerieDTO serieDTO) {
         Map<String, Object> response = new HashMap<>();
 
-        SerieDTO serieDTORta = this.serieService.save(nombreUsuario, serieDTO);
-        if (serieDTORta != null) {
+        try {
+            SerieDTO serieDTORta = this.serieService.save(nombreUsuario, serieDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(serieDTORta);
-        }
 
-        response.put("success", Boolean.FALSE);
-        response.put("message", String.format("La serie %s no se pudo agregar", serieDTO.getTitulo()));
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }catch (SerieException se) {
+            response.put("success", Boolean.FALSE);
+            response.put("message", String.format("La serie %s no se pudo agregar", serieDTO.getTitulo()));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+
+        }
     }
 }

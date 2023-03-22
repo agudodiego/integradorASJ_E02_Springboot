@@ -1,5 +1,6 @@
 package com.asjservicios.seriesappspringboot.service.serviceImpl;
 
+import com.asjservicios.seriesappspringboot.exceptions.PlataformaException;
 import com.asjservicios.seriesappspringboot.model.Plataforma;
 import com.asjservicios.seriesappspringboot.repository.PlataformaRepository;
 import com.asjservicios.seriesappspringboot.service.PlataformaService;
@@ -16,7 +17,13 @@ public class PlataformaServiceImpl implements PlataformaService {
     }
 
     @Override
-    public List<Plataforma> findAll() {
-        return (List<Plataforma>) this.plataformaRepository.findAll();
+    public List<Plataforma> findAll() throws PlataformaException {
+
+        List<Plataforma> plataformas = (List<Plataforma>) this.plataformaRepository.findAll();
+        if (plataformas != null) {
+            return plataformas;
+        }
+
+        throw new PlataformaException();
     }
 }

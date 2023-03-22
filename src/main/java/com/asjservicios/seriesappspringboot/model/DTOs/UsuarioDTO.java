@@ -10,6 +10,7 @@ public class UsuarioDTO {
     private Integer id_usuario;
     private String usuario;
     private String contrasenia;
+    private String nuevaContrasenia;
     private String email;
     private Collection<SerieDTO> usuarioSeries;
 
@@ -38,6 +39,14 @@ public class UsuarioDTO {
 
     public void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
+    }
+
+    public String getNuevaContrasenia() {
+        return nuevaContrasenia;
+    }
+
+    public void setNuevaContrasenia(String nuevaContrasenia) {
+        this.nuevaContrasenia = nuevaContrasenia;
     }
 
     public String getEmail() {

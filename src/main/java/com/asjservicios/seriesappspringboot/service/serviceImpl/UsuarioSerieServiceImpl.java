@@ -1,5 +1,6 @@
 package com.asjservicios.seriesappspringboot.service.serviceImpl;
 
+import com.asjservicios.seriesappspringboot.exceptions.RelacionException;
 import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioSerieDTO;
 import com.asjservicios.seriesappspringboot.model.Serie;
 import com.asjservicios.seriesappspringboot.model.Usuario;
@@ -21,13 +22,16 @@ public class UsuarioSerieServiceImpl implements UsuarioSerieService {
     }
 
     @Override
-    public Optional<UsuarioSerie> findById(Integer id) {
+    public Optional<UsuarioSerie> findById(Integer id) throws RelacionException {
         Optional<UsuarioSerie> optUsuSerie = this.usuarioSerieRepository.findById(id);
-        return optUsuSerie;
+        if (optUsuSerie.isPresent()) {
+            return optUsuSerie;
+        }
+        throw new RelacionException();
     }
 
     @Override
-    public UsuarioSerieDTO updateRelacion(UsuarioSerieDTO relacionFrontDTO) {
+    public UsuarioSerieDTO updateRelacion(UsuarioSerieDTO relacionFrontDTO) throws RelacionException {
         Integer id_usuario = relacionFrontDTO.getId_usuario();
         Integer id_serie = relacionFrontDTO.getId_serie();
 
@@ -41,6 +45,6 @@ public class UsuarioSerieServiceImpl implements UsuarioSerieService {
             this.usuarioSerieRepository.save(optRelacion.get());
             return relacionFrontDTO;
         }
-        return null;
+        throw new RelacionException();
     }
 }

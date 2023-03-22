@@ -1,5 +1,6 @@
 package com.asjservicios.seriesappspringboot.service.serviceImpl;
 
+import com.asjservicios.seriesappspringboot.exceptions.SerieException;
 import com.asjservicios.seriesappspringboot.mapper.SerieMapper;
 import com.asjservicios.seriesappspringboot.model.*;
 import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
@@ -36,7 +37,7 @@ public class SerieServiceImpl implements SerieService {
     }
 
     @Override
-    public SerieDTO save(String nombreUsuario, SerieDTO serieDTO) {
+    public SerieDTO save(String nombreUsuario, SerieDTO serieDTO) throws SerieException {
         Optional<Usuario> optUsuario = this.usuarioRepository.findByUsuario(nombreUsuario);
         Optional<Serie> optSerie = this.findById(serieDTO.getId_serie());
 
@@ -73,7 +74,7 @@ public class SerieServiceImpl implements SerieService {
                 return serieDTO;
             }
         }
-        return null;
+        throw new SerieException();
     }
 
     private UsuarioSerie crearRelacion(Usuario usuario, Serie serie, SerieDTO serieDTO) {
