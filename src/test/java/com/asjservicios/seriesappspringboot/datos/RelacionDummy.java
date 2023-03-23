@@ -12,7 +12,7 @@ public class RelacionDummy {
         // Creo la relacion entre el usuario y la serie
         UsuarioSerie relacion = new UsuarioSerie();
         relacion.setId_usuario_serie(1);
-        relacion.setUsuario(UsuarioDummy.getUsuarioDiego());
+        relacion.setUsuario(UsuarioDummy.getUsuarioDiegoConId());
         relacion.setSerie(SerieDummy.getSerieFriends());
         relacion.setTemp_actual(1);
         relacion.setEpisod_actual(13);

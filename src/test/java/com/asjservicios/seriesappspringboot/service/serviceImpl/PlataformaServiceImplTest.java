@@ -1,6 +1,8 @@
 package com.asjservicios.seriesappspringboot.service.serviceImpl;
 
 import com.asjservicios.seriesappspringboot.datos.PlataformaDummy;
+import com.asjservicios.seriesappspringboot.exceptions.PlataformaException;
+import com.asjservicios.seriesappspringboot.exceptions.SerieException;
 import com.asjservicios.seriesappspringboot.model.Plataforma;
 import com.asjservicios.seriesappspringboot.repository.PlataformaRepository;
 import com.asjservicios.seriesappspringboot.service.PlataformaService;
@@ -14,10 +16,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class PlataformaServiceImplTest {
+
+    List<Plataforma> plataformasConExc = null;
 
     @Mock
     private PlataformaRepository plataformaRepository;
@@ -31,7 +36,7 @@ class PlataformaServiceImplTest {
 
     @Test
     @DisplayName("[Plataforma Service] - Traer todas las plataformas")
-    void findAll() {
+    void findAll() throws PlataformaException {
         // GIVEN
         when(plataformaRepository.findAll())
                 .thenReturn(Arrays.asList(
@@ -48,5 +53,21 @@ class PlataformaServiceImplTest {
         assertThat(plataformas.size()).isEqualTo(2);
 
         verify(plataformaRepository).findAll();
+
+    }
+
+    @Test
+    @DisplayName("[Plataforma Service] - Salida por la excepcion")
+    void findAllConException() throws PlataformaException {
+        // GIVEN
+        when(plataformaRepository.findAll())
+                .thenReturn(plataformasConExc);
+
+        // WHEN
+
+        // THEN
+        assertThatThrownBy(() -> this.plataformaService.findAll())
+                .isInstanceOf(PlataformaException.class);
+
     }
 }

@@ -1,11 +1,11 @@
 package com.asjservicios.seriesappspringboot.service.serviceImpl;
 
-import com.asjservicios.seriesappspringboot.datos.RelacionDummy;
-import com.asjservicios.seriesappspringboot.datos.SerieDTODummy;
-import com.asjservicios.seriesappspringboot.datos.SerieDummy;
-import com.asjservicios.seriesappspringboot.datos.UsuarioDummy;
+import com.asjservicios.seriesappspringboot.datos.*;
+import com.asjservicios.seriesappspringboot.exceptions.SerieException;
+import com.asjservicios.seriesappspringboot.mapper.UsuarioSerieMapper;
 import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
 import com.asjservicios.seriesappspringboot.model.Serie;
+import com.asjservicios.seriesappspringboot.model.Usuario;
 import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
 import com.asjservicios.seriesappspringboot.repository.GeneroRepository;
 import com.asjservicios.seriesappspringboot.repository.SerieRepository;
@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -53,7 +54,6 @@ class SerieServiceImplTest {
         when(serieRepository.findById(20))
                 .thenReturn(Optional.of(SerieDummy.getSerieFriends()));
 
-
         // WHEN
         Optional<Serie> optSerie = this.serieService.findById(20);
 
@@ -70,23 +70,20 @@ class SerieServiceImplTest {
     }
 
     @Test
-    @DisplayName("[Serie Service] - Guardar serie")
-    void save() {
+    @DisplayName("[Serie Service] - Actualizacion de la relacion (el usuario ya la tiene en su lista)")
+    void save() throws SerieException{
         // GIVEN
+        when(usuarioRepository.findByUsuario(usuarioTest))
+                .thenReturn(Optional.of(UsuarioDummy.getUsuarioDiegoConId()));
+
         when(serieRepository.findById(20))
                 .thenReturn(Optional.of(SerieDummy.getSerieFriends()));
 
         when(usuarioSerieRepository.save(RelacionDummy.getRelacionDiegoYFriends()))
                 .thenReturn(RelacionDummy.getRelacionDiegoYFriends());
 
-        when(usuarioRepository.findByUsuario(usuarioTest))
-                .thenReturn(Optional.of(UsuarioDummy.getUsuarioDiegoConId()));
-
         when(usuarioSerieRepository.buscarPorIdUsuarioEIdSerie(idUsuarioTest, idSerieTest))
                 .thenReturn(Optional.of(RelacionDummy.getRelacionDiegoYFriends()));
-
-        when(usuarioSerieRepository.save(RelacionDummy.getRelacionDiegoYFriends()))
-                .thenReturn(RelacionDummy.getRelacionDiegoYFriends());
 
         SerieDTO sDTO = SerieDTODummy.getFriendsDTO();
 
@@ -101,41 +98,80 @@ class SerieServiceImplTest {
         verify(usuarioSerieRepository).buscarPorIdUsuarioEIdSerie(idUsuarioTest, idSerieTest);
 
         verify(usuarioSerieRepository).save(RelacionDummy.getRelacionDiegoYFriends());
+
     }
 
-//    @Test
-//    @DisplayName("[Serie Service] - Guardar serie")
-//    void saveSerieAusenteBD() {
-//
-//        // GIVEN
-//        when(serieRepository.findById(20))
-//                .thenReturn(Optional.of(SerieDummy.getSerieFriends()));
-//
-//        when(usuarioSerieRepository.save(RelacionDummy.getRelacionDiegoYFriends()))
-//                .thenReturn(RelacionDummy.getRelacionDiegoYFriends());
-//
-//        when(usuarioRepository.findByUsuario(usuarioTest))
-//                .thenReturn(Optional.of(UsuarioDummy.getUsuarioDiegoConId()));
-//
-//        when(usuarioSerieRepository.buscarPorIdUsuarioEIdSerie(idUsuarioTest, idSerieTest))
-//                .thenReturn(Optional.of(RelacionDummy.getRelacionDiegoYFriends()));
-//
-//        when(usuarioSerieRepository.save(RelacionDummy.getRelacionDiegoYFriends()))
-//                .thenReturn(RelacionDummy.getRelacionDiegoYFriends());
-//
-//        SerieDTO sDTO = SerieDTODummy.getFriendsDTO();
-//
-//        // WHEN
-//        SerieDTO serieDTO = this.serieService.save(usuarioTest, sDTO);
-//
-//        // THEN
-//        assertThat(serieDTO != null).isTrue();
-//
-//        verify(usuarioRepository).findByUsuario(usuarioTest);
-//
-//        verify(usuarioSerieRepository).buscarPorIdUsuarioEIdSerie(idUsuarioTest, idSerieTest);
-//
-//        verify(usuarioSerieRepository).save(RelacionDummy.getRelacionDiegoYFriends());
-//
-//    }
+    @Test
+    @DisplayName("[Serie Service] - Guardar serie que no esta en BD")
+    void saveSerieAusenteBD() throws SerieException {
+
+        // GIVEN
+        when(usuarioRepository.findByUsuario(usuarioTest))
+                .thenReturn(Optional.of(UsuarioDummy.getUsuarioDiegoConId()));
+
+        when(serieRepository.findById(20))
+                .thenReturn(Optional.empty());
+
+        SerieDTO sDTO = SerieDTODummy.getFriendsDTO();
+
+        // WHEN
+        SerieDTO serieDTO = this.serieService.save(usuarioTest, sDTO);
+
+        // THEN
+        assertThat(serieDTO != null).isTrue();
+
+        assertThat(serieDTO.getId_serie() == idSerieTest).isTrue();
+
+        verify(usuarioRepository).findByUsuario(usuarioTest);
+
+    }
+
+    @Test
+    @DisplayName("[Serie Service] - Creacion la relacion con el usuario (La serie ya esta en la BD)")
+    void saveRelacionAusenteBD() throws SerieException {
+
+        // GIVEN
+        when(usuarioRepository.findByUsuario(usuarioTest))
+                .thenReturn(Optional.of(UsuarioDummy.getUsuarioDiegoConId()));
+
+        when(serieRepository.findById(20))
+                .thenReturn(Optional.of(SerieDummy.getSerieFriends()));
+
+        when(usuarioSerieRepository.buscarPorIdUsuarioEIdSerie(idUsuarioTest, idSerieTest))
+                .thenReturn(Optional.empty());
+
+        SerieDTO sDTO = SerieDTODummy.getFriendsDTO();
+
+        // WHEN
+        SerieDTO serieDTO = this.serieService.save(usuarioTest, sDTO);
+
+        // THEN
+        assertThat(serieDTO != null).isTrue();
+
+        assertThat(serieDTO.getId_serie() == idSerieTest).isTrue();
+
+        //verify(usuarioSerieRepository).save(RelacionDummy.getRelacionDiegoYFriends());
+
+    }
+
+    @Test
+    @DisplayName("[Serie Service] - Salida por la excepcion")
+    void saveConException() throws SerieException {
+
+        // GIVEN
+        when(usuarioRepository.findByUsuario(usuarioTest))
+                .thenReturn(Optional.empty());
+
+        when(serieRepository.findById(20))
+                .thenReturn(Optional.of(SerieDummy.getSerieFriends()));
+
+        SerieDTO sDTO = SerieDTODummy.getFriendsDTO();
+
+        // WHEN
+
+        // THEN
+        assertThatThrownBy(() -> this.serieService.save(usuarioTest, sDTO))
+                .isInstanceOf(SerieException.class);
+
+    }
 }
