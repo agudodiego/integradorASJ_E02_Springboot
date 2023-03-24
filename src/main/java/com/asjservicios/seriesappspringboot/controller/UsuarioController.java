@@ -5,6 +5,7 @@ import com.asjservicios.seriesappspringboot.mapper.UsuarioMapper;
 import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioDTO;
 import com.asjservicios.seriesappspringboot.model.Usuario;
 import com.asjservicios.seriesappspringboot.service.UsuarioService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/{nombre}")
+    @ApiOperation("Devuelve un Usuario con su lista de Series")
     public ResponseEntity<?> getUsuarioByName(@PathVariable String nombre, @RequestBody Usuario usuario) {
 
         Map<String, Object> response = new HashMap<>();
@@ -43,6 +45,7 @@ public class UsuarioController {
     }
 
     @PostMapping("")
+    @ApiOperation("Agrega un nuevo Usuario")
     public ResponseEntity<?> addUsuario(@RequestBody Usuario usuario) {
 
         Map<String, Object> response = new HashMap<>();
@@ -63,6 +66,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{nombre}")
+    @ApiOperation("Actualiza la contraseña de un usuario")
     public ResponseEntity updateContrasenia(@PathVariable String nombre, @RequestBody UsuarioDTO usuarioDTO) {
 
         Map<String, Object> response = new HashMap<>();

@@ -3,6 +3,7 @@ package com.asjservicios.seriesappspringboot.controller;
 import com.asjservicios.seriesappspringboot.exceptions.PlataformaException;
 import com.asjservicios.seriesappspringboot.model.Plataforma;
 import com.asjservicios.seriesappspringboot.service.PlataformaService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +25,7 @@ public class PlataformaController {
     }
 
     @GetMapping("/plataformas")
+    @ApiOperation("Devuelve una lista de las plataformas que puede seleccionar el usuario")
     public ResponseEntity<?> getAllPlataformas() {
 
         Map<String, Object> response = new HashMap<>();

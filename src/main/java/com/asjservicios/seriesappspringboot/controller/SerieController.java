@@ -5,6 +5,7 @@ import com.asjservicios.seriesappspringboot.mapper.SerieMapper;
 import com.asjservicios.seriesappspringboot.model.Serie;
 import com.asjservicios.seriesappspringboot.model.DTOs.SerieDTO;
 import com.asjservicios.seriesappspringboot.service.SerieService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class SerieController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Devuelve una Serie, buscada por su ID (proporcionado por la API de series)")
     public ResponseEntity<?> getSerieById(@PathVariable Integer id) {
         Map<String, Object> response = new HashMap<>();
 
@@ -41,6 +43,7 @@ public class SerieController {
     }
 
     @PostMapping("/{nombreUsuario}")
+    @ApiOperation("Guarda una Serie (en formato SerieDTO) y crea la relacion con el usuario que la agrega")
     public ResponseEntity<?> guardarSerie(@PathVariable String nombreUsuario, @RequestBody SerieDTO serieDTO) {
         Map<String, Object> response = new HashMap<>();
 

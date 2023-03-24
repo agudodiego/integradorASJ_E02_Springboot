@@ -5,6 +5,7 @@ import com.asjservicios.seriesappspringboot.mapper.UsuarioSerieMapper;
 import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioSerieDTO;
 import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
 import com.asjservicios.seriesappspringboot.service.UsuarioSerieService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class UsuarioSerieController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Devuelve una relacion entre un usuario y una serie en su coleccion")
     public ResponseEntity<?> getRelacionUsuarioSerie(@PathVariable Integer id) {
 
         Map<String, Object> response = new HashMap<>();
@@ -42,6 +44,7 @@ public class UsuarioSerieController {
     }
 
     @PutMapping("")
+    @ApiOperation("Actualiza una relacion (modificacion de algun dato de la tabla intermedia)")
     public ResponseEntity<?> actualizarRelacion(@RequestBody UsuarioSerieDTO relacionDTO) {
 
         Map<String, Object> response = new HashMap<>();
