@@ -35,7 +35,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario save(Usuario usuario) throws UsuarioException {
         if (this.usuarioExist(usuario.getUsuario())) {
-            logger.warn("Se intento crear al usuario " + usuario.getUsuario() +"pero ya esta en la base de datos");
+            logger.warn("Se intento crear al usuario " + usuario.getUsuario() +" pero ya esta en la base de datos");
             throw new UsuarioException();
         }
         return this.usuarioRepository.save(usuario);

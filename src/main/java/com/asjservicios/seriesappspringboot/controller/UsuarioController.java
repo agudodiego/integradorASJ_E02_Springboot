@@ -5,19 +5,25 @@ import com.asjservicios.seriesappspringboot.mapper.UsuarioMapper;
 import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioDTO;
 import com.asjservicios.seriesappspringboot.model.Usuario;
 import com.asjservicios.seriesappspringboot.service.UsuarioService;
+import com.asjservicios.seriesappspringboot.service.serviceImpl.UsuarioServiceImpl;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     private final UsuarioService usuarioService;
 
@@ -39,6 +45,13 @@ public class UsuarioController {
 
             response.put("success", Boolean.FALSE);
             response.put("message", "Usuario y/o contraseña incorrecto/s");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+
+        } catch (NoSuchElementException nsee) {
+
+            logger.warn("Se intento acceder con un usuario inexistente en la BD ("+nombre+")");
+            response.put("success", Boolean.FALSE);
+            response.put("message", "El Usuario no existe en la base de datos, debe registrarlo");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
