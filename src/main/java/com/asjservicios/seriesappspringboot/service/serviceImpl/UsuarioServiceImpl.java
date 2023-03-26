@@ -11,6 +11,8 @@ import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
 import com.asjservicios.seriesappspringboot.repository.UsuarioRepository;
 import com.asjservicios.seriesappspringboot.service.SerieService;
 import com.asjservicios.seriesappspringboot.service.UsuarioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import java.util.Optional;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioServiceImpl.class);
 
     private final UsuarioRepository usuarioRepository;
     private final SerieService serieService;
@@ -31,6 +35,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario save(Usuario usuario) throws UsuarioException {
         if (this.usuarioExist(usuario.getUsuario())) {
+            logger.warn("Se intento crear al usuario " + usuario.getUsuario() +"pero ya esta en la base de datos");
             throw new UsuarioException();
         }
         return this.usuarioRepository.save(usuario);
@@ -57,6 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             UsuarioDTO usuarioDTO = UsuarioMapper.entityToDto(optUsuario.get(), seriesDelUser);
             return usuarioDTO;
         }
+        logger.warn("Las credenciales con las que se intenta acceder al usuario " + optUsuario.get().getUsuario() +" no son correctas");
         throw new UsuarioException();
     }
 
@@ -70,6 +76,7 @@ public class UsuarioServiceImpl implements UsuarioService {
            this.usuarioRepository.save(optUsuario.get());
            return optUsuario;
         }
+        logger.warn("Las credenciales con las que se intenta acceder al usuario " + optUsuario.get().getUsuario() +" para modificar la contraseña no son correctas");
         throw  new UsuarioException();
     }
 

@@ -9,6 +9,8 @@ import com.asjservicios.seriesappspringboot.repository.SerieRepository;
 import com.asjservicios.seriesappspringboot.repository.UsuarioRepository;
 import com.asjservicios.seriesappspringboot.repository.UsuarioSerieRepository;
 import com.asjservicios.seriesappspringboot.service.SerieService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.Optional;
 
 @Service
 public class SerieServiceImpl implements SerieService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SerieServiceImpl.class);
 
     private final SerieRepository serieRepository;
     private final GeneroRepository generoRepository;
@@ -44,7 +48,7 @@ public class SerieServiceImpl implements SerieService {
         if (optUsuario.isPresent()) {
 
             if (optSerie.isEmpty()) {
-                System.out.println("--------------->> creo la serie");
+                logger.info("--------------->> creo la serie: " + serieDTO.getTitulo());
                 List<Genero> generos = (List<Genero>) this.generoRepository.findAll();
                 // Mapeo la nueva serie a traves de SerieMapper
                 Serie serieNueva = SerieMapper.dtoToEntity(serieDTO, generos);
@@ -58,7 +62,7 @@ public class SerieServiceImpl implements SerieService {
                 Optional<UsuarioSerie> optRelacion = this.usuarioSerieRepository.buscarPorIdUsuarioEIdSerie(optUsuario.get().getId_usuario(), optSerie.get().getId_serie());
 
                 if (optRelacion.isPresent()) {
-                    System.out.println("--------------->> actualizo la relacion xq el usuario ya la tiene en su repositorio");
+                    logger.info("--------------->> actualizo la relacion xq el usuario "+ optUsuario.get().getUsuario() +" ya tiene la serie " + optSerie.get().getTitulo() + " en su repositorio");
                     // cargo los datos de la relacion en el objeto serie que devuelve la API
                     serieDTO.setEpisod_actual(optRelacion.get().getEpisod_actual());
                     serieDTO.setTemp_actual(optRelacion.get().getTemp_actual());
@@ -67,13 +71,14 @@ public class SerieServiceImpl implements SerieService {
                     this.usuarioSerieRepository.save(optRelacion.get());
 
                 } else {
-                    System.out.println("--------------->> creo la relacion con el usuario xq la serie ya esta en la BD");
+                    logger.info("--------------->> creo la relacion con el usuario "+ optUsuario.get().getUsuario() +" xq la serie "+ optSerie.get().getTitulo() +" ya esta en la BD");
                     UsuarioSerie nuevaRelacion = this.crearRelacion(optUsuario.get(), optSerie.get(), serieDTO );
                     this.usuarioSerieRepository.save(nuevaRelacion);
                 }
                 return serieDTO;
             }
         }
+        logger.warn("El usuario "+ nombreUsuario + " no existe");
         throw new SerieException();
     }
 

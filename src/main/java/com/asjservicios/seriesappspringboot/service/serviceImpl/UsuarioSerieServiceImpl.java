@@ -8,12 +8,16 @@ import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
 import com.asjservicios.seriesappspringboot.repository.UsuarioRepository;
 import com.asjservicios.seriesappspringboot.repository.UsuarioSerieRepository;
 import com.asjservicios.seriesappspringboot.service.UsuarioSerieService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public class UsuarioSerieServiceImpl implements UsuarioSerieService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioSerieServiceImpl.class);
 
     private final UsuarioSerieRepository usuarioSerieRepository;
 
@@ -27,6 +31,7 @@ public class UsuarioSerieServiceImpl implements UsuarioSerieService {
         if (optUsuSerie.isPresent()) {
             return optUsuSerie;
         }
+        logger.warn("No existe ninguna relacion entre usuario/serie con el ID: "+ id);
         throw new RelacionException();
     }
 
@@ -45,6 +50,7 @@ public class UsuarioSerieServiceImpl implements UsuarioSerieService {
             this.usuarioSerieRepository.save(optRelacion.get());
             return relacionFrontDTO;
         }
+        logger.warn("No existe ningune relacion entre el usuario con id: " + id_usuario + " y la serie con id: "+ id_serie);
         throw new RelacionException();
     }
 }
