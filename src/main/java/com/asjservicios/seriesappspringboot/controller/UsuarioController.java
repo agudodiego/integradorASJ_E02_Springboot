@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+import org.springframework.validation.BindingResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +82,13 @@ public class UsuarioController {
 
     @PutMapping("/{nombre}")
     @ApiOperation("Actualiza la contraseña de un usuario")
-    public ResponseEntity updateContrasenia(@PathVariable String nombre, @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity updateContrasenia(@PathVariable String nombre, @Valid @RequestBody UsuarioDTO usuarioDTO, BindingResult result) {
+
+        if(result.hasErrors()){
+            Map<String, String> validaciones = new HashMap<>();
+            result.getFieldErrors().forEach(v -> validaciones.put(v.getField(), v.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(validaciones);
+        }
 
         Map<String, Object> response = new HashMap<>();
 
@@ -91,7 +99,7 @@ public class UsuarioController {
             response.put("message", "La contraseña se actualizo con Exito");
             return ResponseEntity.ok(response);
 
-        }catch (UsuarioException ue) {
+        } catch (UsuarioException ue) {
 
             response.put("success", Boolean.FALSE);
             response.put("message", "La contraseña no se actualizo");

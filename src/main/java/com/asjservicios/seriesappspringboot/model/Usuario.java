@@ -1,6 +1,7 @@
 package com.asjservicios.seriesappspringboot.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,10 +15,13 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_usuario;
+
     @Column(unique = true, nullable = false)
     private String usuario;
+
     @Column(nullable = false)
     private String contrasenia;
+
     @Column(nullable = false)
     private String email;
 

@@ -1,16 +1,24 @@
 package com.asjservicios.seriesappspringboot.model.DTOs;
 
-import com.asjservicios.seriesappspringboot.model.Serie;
-import com.asjservicios.seriesappspringboot.model.UsuarioSerie;
+import javax.validation.constraints.*;
 
 import java.util.Collection;
 
 public class UsuarioDTO {
 
     private Integer id_usuario;
+
+    @Size(min = 5, message = "El usuario debe tener como minimo 5 caracteres")
+//    @NotBlank(message = "El usuario no puede estar en blanco")
     private String usuario;
+
+    @Size(min = 8, message = "La contraseña debe tener como minimo 8 caracteres")
+//    @NotBlank(message = "La contraseña no puede estar en blanco")
     private String contrasenia;
+
     private String nuevaContrasenia;
+
+    @Email(message = "Debe ser una direccion de mail valida")
     private String email;
     private Collection<SerieDTO> usuarioSeries;
 
