@@ -26,20 +26,8 @@ public class PlataformaController {
 
     @GetMapping("/plataformas")
     @ApiOperation("Devuelve una lista de las plataformas que puede seleccionar el usuario")
-    public ResponseEntity<?> getAllPlataformas() {
-
-        Map<String, Object> response = new HashMap<>();
-
-        try {
+    public ResponseEntity<?> getAllPlataformas() throws PlataformaException {
             List<Plataforma> plataformas = this.plataformaService.findAll();
             return ResponseEntity.ok(plataformas);
-
-        } catch (PlataformaException pe) {
-
-            response.put("success", Boolean.FALSE);
-            response.put("message", "Usuario y/o contraseña incorrecto/s");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-
-        }
     }
 }

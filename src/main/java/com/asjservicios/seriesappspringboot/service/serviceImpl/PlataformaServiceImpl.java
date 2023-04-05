@@ -28,6 +28,6 @@ public class PlataformaServiceImpl implements PlataformaService {
             return plataformas;
         }
         logger.warn("Las plataformas no fueron cargadas en la base de datos. Deberan CARGARSE para un correcto funcionamiento de la pagina");
-        throw new PlataformaException();
+        throw new PlataformaException("Usuario y/o contraseña incorrecto/s");
     }
 }
