@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -26,7 +27,7 @@ public class PlataformaController {
 
     @GetMapping("/plataformas")
     @ApiOperation("Devuelve una lista de las plataformas que puede seleccionar el usuario")
-    public ResponseEntity<?> getAllPlataformas() throws PlataformaException {
+    public ResponseEntity<?> getAllPlataformas() throws NoSuchElementException {
             List<Plataforma> plataformas = this.plataformaService.findAll();
             return ResponseEntity.ok(plataformas);
     }

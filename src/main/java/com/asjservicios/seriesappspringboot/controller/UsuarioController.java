@@ -35,54 +35,29 @@ public class UsuarioController {
 
     @PostMapping("/{nombre}")
     @ApiOperation("Devuelve un Usuario con su lista de Series")
-    public ResponseEntity<?> getUsuarioByName(@PathVariable String nombre, @RequestBody Usuario usuario) {
+    public ResponseEntity<?> getUsuarioByName(@PathVariable String nombre, @RequestBody Usuario usuario) throws UsuarioException, NoSuchElementException {
 
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            UsuarioDTO UsuarioDTO = this.usuarioService.traerUsuarioDTOCompleto(nombre, usuario);
-            return ResponseEntity.ok(UsuarioDTO);
-
-        } catch (UsuarioException ue) {
-
-            response.put("success", Boolean.FALSE);
-            response.put("message", "Usuario y/o contraseña incorrecto/s");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-
-        } catch (NoSuchElementException nsee) {
-
-            logger.warn("Se intento acceder con un usuario inexistente en la BD ("+nombre+")");
-            response.put("success", Boolean.FALSE);
-            response.put("message", "El Usuario no existe en la base de datos, debe registrarlo");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-
+        UsuarioDTO UsuarioDTO = this.usuarioService.traerUsuarioDTOCompleto(nombre, usuario);
+        return ResponseEntity.ok(UsuarioDTO);
     }
 
     @PostMapping("")
     @ApiOperation("Agrega un nuevo Usuario")
-    public ResponseEntity<?> addUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> addUsuario(@RequestBody Usuario usuario) throws UsuarioException {
 
         Map<String, Object> response = new HashMap<>();
 
-        try {
-            Usuario u = this.usuarioService.save(usuario);
-            response.put("success", Boolean.TRUE);
-            response.put("message", String.format("El suario %s fue creado", u.getUsuario()));
-            response.put("data", u);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        Usuario u = this.usuarioService.save(usuario);
+        response.put("success", Boolean.TRUE);
+        response.put("message", String.format("El suario %s fue creado", u.getUsuario()));
+        response.put("data", u);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
-        }catch (UsuarioException ue) {
-            response.put("success", Boolean.FALSE);
-            response.put("message", String.format("El suario %s ya existe", usuario.getUsuario()));
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-
-        }
     }
 
     @PutMapping("/{nombre}")
     @ApiOperation("Actualiza la contraseña de un usuario")
-    public ResponseEntity updateContrasenia(@PathVariable String nombre, @Valid @RequestBody UsuarioDTO usuarioDTO, BindingResult result) {
+    public ResponseEntity updateContrasenia(@PathVariable String nombre, @Valid @RequestBody UsuarioDTO usuarioDTO, BindingResult result) throws UsuarioException {
 
         if(result.hasErrors()){
             Map<String, String> validaciones = new HashMap<>();
@@ -92,19 +67,11 @@ public class UsuarioController {
 
         Map<String, Object> response = new HashMap<>();
 
-        try {
-            Optional<Usuario> optUsuario = this.usuarioService.cambiarContrasenia(nombre, usuarioDTO);
-            UsuarioDTO UsuarioDTO = UsuarioMapper.entityToDtoCambioContrasenia(optUsuario.get());
-            response.put("success", Boolean.TRUE);
-            response.put("message", "La contraseña se actualizo con Exito");
-            return ResponseEntity.ok(response);
+        Optional<Usuario> optUsuario = this.usuarioService.cambiarContrasenia(nombre, usuarioDTO);
+        UsuarioDTO UsuarioDTO = UsuarioMapper.entityToDtoCambioContrasenia(optUsuario.get());
+        response.put("success", Boolean.TRUE);
+        response.put("message", "La contraseña se actualizo con Exito");
+        return ResponseEntity.ok(response);
 
-        } catch (UsuarioException ue) {
-
-            response.put("success", Boolean.FALSE);
-            response.put("message", "La contraseña no se actualizo");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-
-        }
     }
 }

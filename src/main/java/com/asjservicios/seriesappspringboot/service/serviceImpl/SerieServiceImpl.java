@@ -79,7 +79,7 @@ public class SerieServiceImpl implements SerieService {
             }
         }
         logger.warn("El usuario "+ nombreUsuario + " no existe");
-        throw new SerieException();
+        throw new SerieException("La serie "+ serieDTO.getTitulo() +" no pudo ser creada");
     }
 
     private UsuarioSerie crearRelacion(Usuario usuario, Serie serie, SerieDTO serieDTO) {

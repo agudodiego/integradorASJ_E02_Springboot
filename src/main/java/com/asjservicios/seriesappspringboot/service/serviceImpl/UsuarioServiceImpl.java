@@ -13,6 +13,7 @@ import com.asjservicios.seriesappspringboot.service.SerieService;
 import com.asjservicios.seriesappspringboot.service.UsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Usuario save(Usuario usuario) throws UsuarioException {
         if (this.usuarioExist(usuario.getUsuario())) {
             logger.warn("Se intento crear al usuario " + usuario.getUsuario() +" pero ya esta en la base de datos");
-            throw new UsuarioException();
+            throw new UsuarioException("El suario " + usuario.getUsuario() +" ya existe", HttpStatus.CONFLICT);
         }
         return this.usuarioRepository.save(usuario);
     }
@@ -63,7 +64,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             return usuarioDTO;
         }
         logger.warn("Las credenciales con las que se intenta acceder al usuario " + optUsuario.get().getUsuario() +" no son correctas");
-        throw new UsuarioException();
+        throw new UsuarioException("Usuario y/o contraseña incorrecto/s", HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class UsuarioServiceImpl implements UsuarioService {
            return optUsuario;
         }
         logger.warn("Las credenciales con las que se intenta acceder al usuario " + optUsuario.get().getUsuario() +" para modificar la contraseña no son correctas");
-        throw  new UsuarioException();
+        throw  new UsuarioException("La contraseña no se actualizo", HttpStatus.NOT_FOUND);
     }
 
     // METODOS AUXILIARES **************************************************

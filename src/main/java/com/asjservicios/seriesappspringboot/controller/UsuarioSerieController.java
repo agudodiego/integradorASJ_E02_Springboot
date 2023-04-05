@@ -27,37 +27,20 @@ public class UsuarioSerieController {
 
     @GetMapping("/{id}")
     @ApiOperation("Devuelve una relacion entre un usuario y una serie en su coleccion")
-    public ResponseEntity<?> getRelacionUsuarioSerie(@PathVariable Integer id) {
+    public ResponseEntity<?> getRelacionUsuarioSerie(@PathVariable Integer id) throws RelacionException {
 
-        Map<String, Object> response = new HashMap<>();
+        UsuarioSerie optUsuarioSerie = this.usuarioSerieService.findById(id).get();
+        UsuarioSerieDTO UsuarioSerieDTO = UsuarioSerieMapper.entityToDto(optUsuarioSerie);
+        return ResponseEntity.ok(UsuarioSerieDTO);
 
-        try {
-            UsuarioSerie optUsuarioSerie = this.usuarioSerieService.findById(id).get();
-            UsuarioSerieDTO UsuarioSerieDTO = UsuarioSerieMapper.entityToDto(optUsuarioSerie);
-            return ResponseEntity.ok(UsuarioSerieDTO);
-
-        }catch (Exception re) {
-            response.put("success", Boolean.FALSE);
-            response.put("message", "La relacion no existe");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
     }
 
     @PutMapping("")
     @ApiOperation("Actualiza una relacion (modificacion de algun dato de la tabla intermedia)")
-    public ResponseEntity<?> actualizarRelacion(@RequestBody UsuarioSerieDTO relacionDTO) {
+    public ResponseEntity<?> actualizarRelacion(@RequestBody UsuarioSerieDTO relacionDTO) throws RelacionException {
 
-        Map<String, Object> response = new HashMap<>();
+        UsuarioSerieDTO relDTO = this.usuarioSerieService.updateRelacion(relacionDTO);
+        return ResponseEntity.ok(relDTO);
 
-        try {
-            UsuarioSerieDTO relDTO = this.usuarioSerieService.updateRelacion(relacionDTO);
-            return ResponseEntity.ok(relDTO);
-            
-        }catch (RelacionException re) {
-
-            response.put("success", Boolean.FALSE);
-            response.put("message", "La relacion entre el usuario y la serie no existe");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-        }
     }
 }

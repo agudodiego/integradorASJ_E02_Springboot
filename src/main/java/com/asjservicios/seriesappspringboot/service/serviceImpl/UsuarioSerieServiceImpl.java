@@ -10,6 +10,7 @@ import com.asjservicios.seriesappspringboot.repository.UsuarioSerieRepository;
 import com.asjservicios.seriesappspringboot.service.UsuarioSerieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class UsuarioSerieServiceImpl implements UsuarioSerieService {
             return optUsuSerie;
         }
         logger.warn("No existe ninguna relacion entre usuario/serie con el ID: "+ id);
-        throw new RelacionException();
+        throw new RelacionException("La relacion no existe", HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -51,6 +52,6 @@ public class UsuarioSerieServiceImpl implements UsuarioSerieService {
             return relacionFrontDTO;
         }
         logger.warn("No existe ningune relacion entre el usuario con id: " + id_usuario + " y la serie con id: "+ id_serie);
-        throw new RelacionException();
+        throw new RelacionException("La relacion entre el usuario y la serie no existe", HttpStatus.CONFLICT);
     }
 }
