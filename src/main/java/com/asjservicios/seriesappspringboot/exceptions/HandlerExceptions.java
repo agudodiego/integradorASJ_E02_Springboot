@@ -3,6 +3,7 @@ package com.asjservicios.seriesappspringboot.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -32,6 +33,12 @@ public class HandlerExceptions {
     @ExceptionHandler(RelacionException.class)
     public ResponseEntity<?> handlerRelacionException(RelacionException e) {
         return ResponseEntity.status(e.status).body(responseMaker(Boolean.FALSE, e.getMessage()));
+    }
+
+    // Este metodo maneja los errores que se generan en las @Validations
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handlerRelacionException(MethodArgumentNotValidException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMaker(Boolean.FALSE, e.getFieldError().getDefaultMessage()));
     }
 
     // Metodo interno

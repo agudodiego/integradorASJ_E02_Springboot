@@ -7,6 +7,7 @@ import com.asjservicios.seriesappspringboot.model.Usuario;
 import com.asjservicios.seriesappspringboot.service.UsuarioService;
 import com.asjservicios.seriesappspringboot.service.serviceImpl.UsuarioServiceImpl;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/usuarios")
@@ -29,16 +31,11 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
-    }
-
     @PostMapping("/{nombre}")
     @ApiOperation("Devuelve un Usuario con su lista de Series")
     public ResponseEntity<?> getUsuarioByName(@PathVariable String nombre, @RequestBody Usuario usuario) throws UsuarioException, NoSuchElementException {
 
-        UsuarioDTO UsuarioDTO = this.usuarioService.traerUsuarioDTOCompleto(nombre, usuario);
-        return ResponseEntity.ok(UsuarioDTO);
+        return ResponseEntity.ok(usuarioService.traerUsuarioDTOCompleto(nombre, usuario));
     }
 
     @PostMapping("")
@@ -47,7 +44,7 @@ public class UsuarioController {
 
         Map<String, Object> response = new HashMap<>();
 
-        Usuario u = this.usuarioService.save(usuario);
+        Usuario u = usuarioService.save(usuario);
         response.put("success", Boolean.TRUE);
         response.put("message", String.format("El suario %s fue creado", u.getUsuario()));
         response.put("data", u);
@@ -57,17 +54,11 @@ public class UsuarioController {
 
     @PutMapping("/{nombre}")
     @ApiOperation("Actualiza la contraseña de un usuario")
-    public ResponseEntity updateContrasenia(@PathVariable String nombre, @Valid @RequestBody UsuarioDTO usuarioDTO, BindingResult result) throws UsuarioException {
-
-        if(result.hasErrors()){
-            Map<String, String> validaciones = new HashMap<>();
-            result.getFieldErrors().forEach(v -> validaciones.put(v.getField(), v.getDefaultMessage()));
-            return ResponseEntity.badRequest().body(validaciones);
-        }
+    public ResponseEntity updateContrasenia(@PathVariable String nombre, @Valid @RequestBody UsuarioDTO usuarioDTO) throws UsuarioException {
 
         Map<String, Object> response = new HashMap<>();
 
-        Optional<Usuario> optUsuario = this.usuarioService.cambiarContrasenia(nombre, usuarioDTO);
+        Optional<Usuario> optUsuario = usuarioService.cambiarContrasenia(nombre, usuarioDTO);
         UsuarioDTO UsuarioDTO = UsuarioMapper.entityToDtoCambioContrasenia(optUsuario.get());
         response.put("success", Boolean.TRUE);
         response.put("message", "La contraseña se actualizo con Exito");
