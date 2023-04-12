@@ -42,9 +42,9 @@ public class UsuarioController {
     @ApiOperation("Agrega un nuevo Usuario")
     public ResponseEntity<?> addUsuario(@RequestBody Usuario usuario) throws UsuarioException {
 
-        Map<String, Object> response = new HashMap<>();
-
         Usuario u = usuarioService.save(usuario);
+
+        Map<String, Object> response = new HashMap<>();
         response.put("success", Boolean.TRUE);
         response.put("message", String.format("El suario %s fue creado", u.getUsuario()));
         response.put("data", u);
@@ -56,12 +56,11 @@ public class UsuarioController {
     @ApiOperation("Actualiza la contraseña de un usuario")
     public ResponseEntity updateContrasenia(@PathVariable String nombre, @Valid @RequestBody UsuarioDTO usuarioDTO) throws UsuarioException {
 
+        usuarioService.cambiarContrasenia(nombre, usuarioDTO);
         Map<String, Object> response = new HashMap<>();
-
-        Optional<Usuario> optUsuario = usuarioService.cambiarContrasenia(nombre, usuarioDTO);
-        UsuarioDTO UsuarioDTO = UsuarioMapper.entityToDtoCambioContrasenia(optUsuario.get());
         response.put("success", Boolean.TRUE);
         response.put("message", "La contraseña se actualizo con Exito");
+
         return ResponseEntity.ok(response);
 
     }

@@ -26,8 +26,7 @@ public class SerieController {
     @ApiOperation("Devuelve una Serie, buscada por su ID (proporcionado por la API de series)")
     public ResponseEntity<?> getSerieById(@PathVariable Integer id) throws NoSuchElementException {
 
-        Optional<Serie> optSerie = serieService.findById(id);
-        return ResponseEntity.ok(SerieMapper.entityToDtoSinRelacion(optSerie.get()));
+        return ResponseEntity.ok(serieService.getSerieById(id));
     }
 
     @PostMapping("/{nombreUsuario}")

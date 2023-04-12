@@ -22,8 +22,7 @@ public class UsuarioSerieController {
     @ApiOperation("Devuelve una relacion entre un usuario y una serie en su coleccion")
     public ResponseEntity<?> getRelacionUsuarioSerie(@PathVariable Integer id) throws RelacionException {
 
-        UsuarioSerie optUsuarioSerie = usuarioSerieService.findById(id).get();
-        return ResponseEntity.ok(UsuarioSerieMapper.entityToDto(optUsuarioSerie));
+        return ResponseEntity.ok(usuarioSerieService.findById(id));
     }
 
     @PutMapping("")
