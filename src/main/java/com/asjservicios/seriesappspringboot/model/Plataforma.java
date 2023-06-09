@@ -1,10 +1,14 @@
 package com.asjservicios.seriesappspringboot.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "plataformas")
 public class Plataforma {
@@ -15,4 +19,8 @@ public class Plataforma {
     private String plataforma;
     private String url;
 
+    public Plataforma(String plataforma, String url) {
+        this.plataforma = plataforma;
+        this.url = url;
+    }
 }
