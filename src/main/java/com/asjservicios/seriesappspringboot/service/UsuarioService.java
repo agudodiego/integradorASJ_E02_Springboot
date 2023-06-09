@@ -4,6 +4,7 @@ import com.asjservicios.seriesappspringboot.exceptions.UsuarioException;
 import com.asjservicios.seriesappspringboot.model.DTOs.UsuarioDTO;
 import com.asjservicios.seriesappspringboot.model.Usuario;
 
+import java.util.Map;
 import java.util.Optional;
 
 public interface UsuarioService {
@@ -12,6 +13,6 @@ public interface UsuarioService {
     boolean usuarioExist(String nombre);
     Optional<Usuario> buscarPorNombre(String nombre);
     UsuarioDTO traerUsuarioDTOCompleto(String nombre, Usuario usuario) throws UsuarioException;
-    Optional<Usuario> cambiarContrasenia(String nombre, UsuarioDTO usuarioDTO) throws UsuarioException;
+    Usuario cambiarContrasenia(String nombre, UsuarioDTO usuarioDTO) throws UsuarioException;
 
 }
